@@ -67,6 +67,7 @@ main = do
   let sessionLength = 120 * 60 -- two hour sessions
   let cfg = Config staticRoot plaiTestPath sessionLength
                    (string2words sessionSecret)
+		   "cs.brown.edu"
   setupLogging maybeLogEmail maybeLogFile logLevel
   case cmds of
     [] -> do noticeM "tourney" "Starting tourney-server."

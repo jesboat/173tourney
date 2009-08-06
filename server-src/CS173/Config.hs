@@ -2,6 +2,7 @@ module CS173.Config
   ( Config (..)
   , staticRoot
   , plaiTestPath
+  , defaultDomain
   , run173Server
   , runConfig
   , ServerM
@@ -19,6 +20,7 @@ data Config = Config
   , configPLAITestPath :: String
   , configSessionLength :: Int
   , configSessionSecret :: [Octet]
+  , configDefaultDomain :: String
   }
 
 
@@ -48,6 +50,10 @@ plaiTestPath = do
   Config{configPLAITestPath=r} <- get
   return r
 
+defaultDomain :: ServerM String
+defaultDomain = do
+  Config{configDefaultDomain=r} <- get
+  return r
 
 runConfig :: Config -> ServerM a -> IO a
 runConfig config m = evalStateT m config

@@ -58,10 +58,12 @@ adminService path f = dirEnd path $ do
   return (setHeader "Cache-Control" "no-store, must-revalidate" r)
 
 loginService = do
-  username <- stringInput "username"
+  username_in <- stringInput "username"
   password <- stringInput "password"
   method POST
   sessionLength <- lift $ getSessionLength
+  domainName <- lift $ defaultDomain
+  let username = applySuffix (Just domainName) username_in
   r <- couchIO $ Action.login (doc username) password
   case r of
     LoginFailed -> do
@@ -404,3 +406,7 @@ api = anyOf
   , reportAPICallError ]
 
 files config =  serveFiles ["index.html"] (configStaticRoot config)
+
+applySuffix Nothing user = user
+applySuffix (Just suffix) user | '@' `elem` user = user
+			       | otherwise = user ++ suffix
